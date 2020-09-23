@@ -21,6 +21,7 @@ protected:
 	void _ParseSection_ANIMATIONS(string line);
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
+	
 
 	
 public: 
@@ -30,8 +31,10 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void UpdateObjects(vector<LPGAMEOBJECT> objs) { objects = objs; };
 
 	CMario * GetPlayer() { return player; } 
+	vector<LPGAMEOBJECT> GetObjects(){ return objects; }
 
 	//friend class CPlayScenceKeyHandler;
 };

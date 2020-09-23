@@ -7,12 +7,14 @@
 
 #include "Goomba.h"
 #include "Portal.h"
+#include "Bullet.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
+	health = MARIO_HEALTH_MAX;
 
 	start_x = x; 
 	start_y = y; 
@@ -24,10 +26,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-
 	// Simple fall down
 	vy += MARIO_GRAVITY*dt;
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -212,3 +212,23 @@ void CMario::Reset()
 	SetSpeed(0, 0);
 }
 
+void CMario::fire(vector<LPGAMEOBJECT> &objects)
+{
+	
+	int ani_set_id = 6;
+
+	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+
+	CGameObject *obj = NULL;
+	obj = new CBullet();
+
+
+	// General object setup
+	obj->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+	obj->SetAnimationSet(ani_set);
+	objects.push_back(obj);
+	
+}

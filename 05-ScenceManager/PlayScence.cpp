@@ -6,6 +6,7 @@
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
+#include "Bullet.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_BULLET	6
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -164,6 +166,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj = new CPortal(x, y, r, b, scene_id);
 		}
 		break;
+	case OBJECT_TYPE_BULLET: obj = new CBullet(); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -234,12 +237,21 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		if (objects[i]->state != 200) {
+			coObjects.push_back(objects[i]);
+		}
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+		/*if (objects[i]->state == 200) {
+			delete objects[i];
+		}
+		else {
+			objects[i]->Update(dt, &coObjects);
+		}
+		DebugOut(L"[INFO] Switching to scene %i\n", objects.size());*/
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -279,7 +291,7 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-
+	vector<LPGAMEOBJECT> objects = ((CPlayScene*)scence)->GetObjects();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
@@ -289,7 +301,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A: 
 		mario->Reset();
 		break;
+	case DIK_Z:
+		mario->fire(objects);
+		break;
 	}
+
+	((CPlayScene*)scence)->UpdateObjects(objects);
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
@@ -306,3 +323,4 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	else
 		mario->SetState(MARIO_STATE_IDLE);
 }
+
