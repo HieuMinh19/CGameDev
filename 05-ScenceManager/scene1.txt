@@ -6,7 +6,7 @@
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]
-# BIG MARIO 
+# TANK 
 # idle right
 10001	246	154	260	181	0
 # walk
@@ -19,7 +19,7 @@
 10013	125	154	140	181	0
 # die 
 10099	215	120	231	135	0
-# SMALL MARIO
+# Main
 # idle small right
 10021	247	0	259	15	0
 # walk

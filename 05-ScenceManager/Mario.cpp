@@ -26,8 +26,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	vy += MARIO_GRAVITY*dt;
-
+	if (!isJumping)
+		vy += MARIO_GRAVITY*dt;
+	else
+		vy += JUMP_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -115,7 +117,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	//Jump checking
+	if (isJumping) {
+		if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
+		{
+			untouchable_start = 0;
+			untouchable = 0;
+			isJumping = FALSE;
+			SetState(MARIO_STATE_IDLE);
+			SetLevel(MARIO_LEVEL_BIG);
+		}
+	}
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -125,13 +137,18 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	else
-	if (level == MARIO_LEVEL_BIG)
+	else if (level == MARIO_LEVEL_BIG)
 	{
 		if (vx == 0)
 		{
-			if (nx>0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
-			else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			if (!isJumping) {
+				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
+				else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			}
+			if (isJumping) {
+				if (nx > 0) ani = MARIO_ANI_JUMP_RIGHT;
+				else ani = MARIO_ANI_JUMP_LEFT;
+			}
 		}
 		else if (vx > 0) 
 			ani = MARIO_ANI_BIG_WALKING_RIGHT; 

@@ -284,6 +284,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
+		mario->isJumping = true;
+		mario->jump_start = GetTickCount();
 		mario->SetState(MARIO_STATE_JUMP);
 		break;
 	case DIK_A: 
