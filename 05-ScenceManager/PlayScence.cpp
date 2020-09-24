@@ -237,21 +237,16 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
-		if (objects[i]->state != 200) {
-			coObjects.push_back(objects[i]);
-		}
+		coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
-		/*if (objects[i]->state == 200) {
-			delete objects[i];
+		if (objects[i]->state == -1) {
+			objects[i]->deleteObject(objects, i);
 		}
-		else {
-			objects[i]->Update(dt, &coObjects);
-		}
-		DebugOut(L"[INFO] Switching to scene %i\n", objects.size());*/
+		
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -271,7 +266,10 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
+	{
 		objects[i]->Render();
+	}
+		
 }
 
 /*
@@ -324,3 +322,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_IDLE);
 }
 
+void CGameObject::deleteObject(vector<LPGAMEOBJECT>& coObjects, int i) {
+	coObjects.erase(coObjects.begin() + i);
+}

@@ -8,6 +8,8 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "Bullet.h"
+#include "Koopas.h"
+
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -112,6 +114,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
+			}
+			else if (dynamic_cast<CKoopas *>(e->obj))
+			{
+				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
+				if (untouchable == 0)
+				{
+					if (koopas->GetState() == KOOPAS_STATE_HEALTH)
+					{
+						health += 100;
+						koopas->SetState(KOOPAS_STATE_DIE);
+						DebugOut(L"[ERROR] Máu %i \n", health);
+					}
+				}
 			}
 		}
 	}

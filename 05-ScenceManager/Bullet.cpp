@@ -20,14 +20,6 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
 
-	if (vx < 0 && x < 0) {
-		x = 0; vx = -vx;
-	}
-
-	if (vx > 0 && x > 290) {
-		x = 290; vx = -vx;
-	}
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -55,8 +47,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		
 
 
 		//
@@ -69,10 +60,12 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Goomba 
 			{
 				CKoopas *koomba = dynamic_cast<CKoopas *>(e->obj);
-				koomba->SetState(KOOPAS_STATE_DIE);
+				koomba->SetState(KOOPAS_STATE_HEALTH);
 				SetState(BULLET_STATE_DIE);
 			} 
 		}
+
+		if (nx != 0 || ny != 0) SetState(BULLET_STATE_DIE);
 	}
 
 	// clean up collision events

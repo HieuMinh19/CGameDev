@@ -7,7 +7,7 @@
 #define BULLET_BBOX_HEIGHT 5
 
 #define BULLET_STATE_FLYING 100
-#define BULLET_STATE_DIE 200
+#define BULLET_STATE_DIE -1
 
 class CBullet : public CGameObject
 {
