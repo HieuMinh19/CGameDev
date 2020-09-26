@@ -1,6 +1,8 @@
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
 0	textures\mario.png	255	255	255
+5	textures\main_character.png	0 	57	115
+6	textures\main_character_revert.png	0	57	115
 20	textures\misc.png	176	224	248
 
 
@@ -8,15 +10,19 @@
 [SPRITES]
 # BIG MARIO 
 # idle right
-10001	246	154	260	181	0
+10001	3	30	10	45	5
 # walk
-10002	275	154	290	181	0		
-10003	304	154	321	181	0
+10001	3	30	10	45	5		
+10002	12	30	19	45	5	
+10003	21	30	28	45	5
+10004	30	30	37	45	5
 # idle left
-10011	186	154	200	181	0
+10011	372	30	379	45	6
 #walk
-10012	155	154	170	181	0
-10013	125	154	140	181	0
+10011	372	30	379	45	6
+10012	381	30	388	45	6
+10013	390	30	397	45	6
+10014	399	30	406	45	6
 # die 
 10099	215	120	231	135	0
 # SMALL MARIO
