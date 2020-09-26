@@ -95,7 +95,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (untouchable==0)
 					{
-						if (goomba->GetState()!=GOOMBA_STATE_DIE)
+						if (goomba->GetState()!= GOOMBA_STATE_DIE)
 						{
 							if (level > MARIO_LEVEL_SMALL)
 							{
