@@ -135,7 +135,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	if (isStandAttack) {
-		state = MARIO_STATE_STAND_ATTACK_RIGHT;
+		if (vx == 0) {
+			if (!isJumping) {
+				state = MARIO_STATE_STAND_ATTACK_RIGHT;
+			}
+			else {
+				state = MARIO_STATE_JUMP_UP;
+			}
+		}
+		else {
+			if (nx > 0) {
+				state = MARIO_STATE_WALK_UP_RIGHT;
+			}
+		}
 	}
 	if (!isAttackUp) {
 		state = MARIO_STATE_IDLE;
@@ -167,15 +179,30 @@ void CMario::Render()
 				else ani = MARIO_ANI_BIG_IDLE_LEFT;
 			}
 			if (isJumping) {
-				if (nx > 0) ani = MARIO_ANI_JUMP_RIGHT;
+				if (nx > 0) {
+					if(state == MARIO_STATE_JUMP_UP){
+						ani = MARIO_ANI_JUMP_UP_RIGHT;
+					}
+					else {
+						ani = MARIO_ANI_JUMP_RIGHT;
+					}
+				}
 				else ani = MARIO_ANI_JUMP_LEFT;
 			}
 		}
-		else if (vx > 0) 
-			ani = MARIO_ANI_BIG_WALKING_RIGHT; 
-		else ani = MARIO_ANI_BIG_WALKING_LEFT;
+		else if (vx > 0) {
+			if(state == MARIO_STATE_WALK_UP_RIGHT){ 
+				ani = MARIO_ANI_WALK_UP_RIGHT;
+			}
+			else {
+				ani = MARIO_ANI_BIG_WALKING_RIGHT;
+			}
+		}
+		else {
+			ani = MARIO_ANI_BIG_WALKING_LEFT;
+		}
 	}
-	else if (level == MARIO_LEVEL_SMALL)
+	/*else if (level == MARIO_LEVEL_SMALL)
 	{
 		if (vx == 0)
 		{
@@ -185,7 +212,7 @@ void CMario::Render()
 		else if (vx > 0)
 			ani = MARIO_ANI_SMALL_WALKING_RIGHT;
 		else ani = MARIO_ANI_SMALL_WALKING_LEFT;
-	}
+	}*/
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -213,6 +240,10 @@ void CMario::SetState(int state)
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		vy = -MARIO_JUMP_SPEED_Y;
 		break; 
+	case MARIO_STATE_JUMP_UP:
+		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
+		vy = -MARIO_JUMP_SPEED_Y;
+		break;
 	case MARIO_STATE_IDLE: 
 		vx = 0;
 		break;
@@ -221,6 +252,10 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_ATTACK_UP_RIGHT:
 		level = MARIO_LEVEL_ATTACK_UP;
+		break;
+	case MARIO_STATE_WALK_UP_RIGHT:
+		vx = MARIO_WALKING_SPEED;
+		nx = 1;
 		break;
 	}
 }
@@ -262,6 +297,7 @@ void CMario::Reset()
 }
 void CMario::ResetJump()
 {
+	isJumping = FALSE;
 	SetState(MARIO_STATE_IDLE);
 	SetLevel(MARIO_LEVEL_BIG);
 	//SetPosition(start_x, start_y);
@@ -269,6 +305,8 @@ void CMario::ResetJump()
 	//reset sate jump
 	animation_set->at(MARIO_ANI_JUMP_RIGHT)->Reset();
 	animation_set->at(MARIO_ANI_JUMP_LEFT)->Reset();
+	animation_set->at(MARIO_ANI_JUMP_UP_RIGHT)->Reset();
+	
 }
 
 void CMario::ResetAttackUp()

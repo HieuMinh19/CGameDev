@@ -283,19 +283,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
-		mario->isJumping = true;
-		mario->jump_start = GetTickCount();
-		mario->SetState(MARIO_STATE_JUMP);
-		break;
+
 	case DIK_A: 
 		mario->Reset();
 		break;
 	case DIK_UP:
 			mario->attack_start = GetTickCount();
 			mario->isAttackUp = TRUE;
-			//mario->isStandAttack = TRUE;
-		
+			//mario->isStandAttack = TRUE;	
 		break;
 	}
 }
@@ -321,10 +316,26 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
+	if (game->IsKeyDown(DIK_RIGHT)) {
+		if (mario->isStandAttack) {
+			mario->SetState(MARIO_STATE_WALK_UP_RIGHT);
+		}
+		else
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+	}
 	else if (game->IsKeyDown(DIK_LEFT))
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
+	else if (game->IsKeyDown(DIK_SPACE)) {
+		if (!mario->isJumping) {
+			mario->isJumping = true;
+			mario->jump_start = GetTickCount();
+			if (mario->isStandAttack) {
+				mario->SetState(MARIO_STATE_JUMP_UP);
+			}
+			else
+				mario->SetState(MARIO_STATE_JUMP);
+		}
+	}
 	else
 		mario->SetState(MARIO_STATE_IDLE);
 }
