@@ -291,6 +291,26 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A: 
 		mario->Reset();
 		break;
+	case DIK_UP:
+			mario->attack_start = GetTickCount();
+			mario->isAttackUp = TRUE;
+			//mario->isStandAttack = TRUE;
+		
+		break;
+	}
+}
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
+{
+	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	switch (KeyCode)
+	{
+	case DIK_UP:
+		mario->isStandAttack = FALSE;
+		mario->isAttackUp = FALSE;
+		mario->ResetAttackUp();
+		break;
 	}
 }
 

@@ -121,12 +121,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isJumping) {
 		if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
 		{
-			untouchable_start = 0;
-			untouchable = 0;
 			isJumping = FALSE;
-			SetState(MARIO_STATE_IDLE);
-			SetLevel(MARIO_LEVEL_BIG);
+			ResetJump();
 		}
+	}
+	//Stand attack checking
+	if (isAttackUp && !isStandAttack) {
+		state = MARIO_STATE_ATTACK_UP_RIGHT;
+		if (GetTickCount() - attack_start > 450)
+		{
+			isStandAttack = TRUE;
+			
+		}
+	}
+	if (isStandAttack) {
+		state = MARIO_STATE_STAND_ATTACK_RIGHT;
+	}
+	if (!isAttackUp) {
+		state = MARIO_STATE_IDLE;
 	}
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -142,7 +154,16 @@ void CMario::Render()
 		if (vx == 0)
 		{
 			if (!isJumping) {
-				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
+				if (nx > 0) {
+					if (state == MARIO_STATE_IDLE)
+						ani = MARIO_ANI_BIG_IDLE_RIGHT;
+					else if(state == MARIO_STATE_ATTACK_UP_RIGHT) 
+						ani = MARIO_ANI_ATTACK_UP_RIGHT;
+					else if (state == MARIO_STATE_STAND_ATTACK_RIGHT) {
+						ani = MARIO_ANI_STAND_ATTACK_RIGHT;
+					}
+					else ani = MARIO_ANI_BIG_IDLE_RIGHT;
+				}
 				else ani = MARIO_ANI_BIG_IDLE_LEFT;
 			}
 			if (isJumping) {
@@ -198,18 +219,27 @@ void CMario::SetState(int state)
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
+	case MARIO_STATE_ATTACK_UP_RIGHT:
+		level = MARIO_LEVEL_ATTACK_UP;
+		break;
 	}
 }
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	float new_y;
+	new_y = y + 15;
 	left = x;
-	top = y; 
+	top = new_y;
 
 	if (level==MARIO_LEVEL_BIG)
 	{
 		right = x + MARIO_BIG_BBOX_WIDTH;
-		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+		bottom = new_y + MARIO_BIG_BBOX_HEIGHT;
+	}
+	else if (level == MARIO_LEVEL_ATTACK_UP) {
+		right = x + MARIO_ATTACK_UP_BBOX_WIDTH;
+		bottom = y + MARIO_ATTACK_UP_BBOX_HEIGHT;
 	}
 	else
 	{
@@ -227,5 +257,27 @@ void CMario::Reset()
 	SetLevel(MARIO_LEVEL_BIG);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_JUMP_RIGHT)->Reset();
+}
+void CMario::ResetJump()
+{
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_BIG);
+	//SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_JUMP_RIGHT)->Reset();
+	animation_set->at(MARIO_ANI_JUMP_LEFT)->Reset();
+}
+
+void CMario::ResetAttackUp()
+{
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_BIG);
+	//SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_ATTACK_UP_RIGHT)->Reset();
 }
 

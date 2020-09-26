@@ -14,6 +14,8 @@
 #define MARIO_STATE_WALKING_LEFT	200
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_DIE				400
+#define MARIO_STATE_ATTACK_UP_RIGHT	500
+#define MARIO_STATE_STAND_ATTACK_RIGHT	600
 
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
@@ -29,15 +31,21 @@
 #define MARIO_ANI_DIE				8
 #define MARIO_ANI_JUMP_RIGHT				9
 #define MARIO_ANI_JUMP_LEFT				10
+#define MARIO_ANI_ATTACK_UP_RIGHT				11
+#define MARIO_ANI_STAND_ATTACK_RIGHT				12
 
-#define	MARIO_LEVEL_SMALL	1
-#define	MARIO_LEVEL_BIG		2
+#define	MARIO_LEVEL_SMALL			1
+#define	MARIO_LEVEL_BIG				2
+#define	MARIO_LEVEL_ATTACK_UP		3
 
 #define MARIO_BIG_BBOX_WIDTH  15
-#define MARIO_BIG_BBOX_HEIGHT 18
+#define MARIO_BIG_BBOX_HEIGHT 20
 
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 15
+
+#define MARIO_ATTACK_UP_BBOX_WIDTH  13
+#define MARIO_ATTACK_UP_BBOX_HEIGHT 50
 
 #define MARIO_UNTOUCHABLE_TIME 5000
 #define MARIO_JUMP_TIME 1000
@@ -52,8 +60,8 @@ class CMario : public CGameObject
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
 public: 
-	boolean isJumping;
-	DWORD jump_start;
+	boolean isJumping, isAttackUp, isStandAttack;
+	DWORD jump_start, attack_start;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
@@ -63,6 +71,7 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 
 	void Reset();
-
+	void ResetJump();
+	void ResetAttackUp();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
