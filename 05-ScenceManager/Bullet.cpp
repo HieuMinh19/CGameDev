@@ -1,7 +1,8 @@
 #include "Bullet.h"
 #include "Koopas.h"
-CBullet::CBullet()
+CBullet::CBullet(float playerNX)
 {
+	nx = playerNX;
 	SetState(BULLET_STATE_FLYING);
 }
 
@@ -83,7 +84,9 @@ void CBullet::SetState(int state)
 	switch (state)
 	{
 	case BULLET_STATE_FLYING:
-		vx = BULLET_WALKING_SPEED;
+		vx = BULLET_WALKING_SPEED
+		if(nx<0)
+			vx = -BULLET_WALKING_SPEED;
 		break;
 	case BULLET_STATE_DIE:
 		break;

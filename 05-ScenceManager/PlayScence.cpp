@@ -166,7 +166,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj = new CPortal(x, y, r, b, scene_id);
 		}
 		break;
-	case OBJECT_TYPE_BULLET: obj = new CBullet(); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;

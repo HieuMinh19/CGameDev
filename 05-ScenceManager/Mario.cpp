@@ -17,6 +17,7 @@ CMario::CMario(float x, float y) : CGameObject()
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	health = MARIO_HEALTH_MAX;
+	maxHealth = MARIO_HEALTH_MAX;
 
 	start_x = x; 
 	start_y = y; 
@@ -119,11 +120,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
 				if (untouchable == 0)
-				{
+				{	
 					if (koopas->GetState() == KOOPAS_STATE_HEALTH)
 					{
 						health += 100;
+						if (health > maxHealth)
+							health = maxHealth;
 						koopas->SetState(KOOPAS_STATE_DIE);
+						DebugOut(L"[ERROR] Máu %i \n", health);
+					}
+					else {
+						health -= koopas->GetDame();
+						if (health < 0) {
+							SetState(MARIO_STATE_DIE);
+						}
+						StartUntouchable();
 						DebugOut(L"[ERROR] Máu %i \n", health);
 					}
 				}
@@ -235,8 +246,7 @@ void CMario::fire(vector<LPGAMEOBJECT> &objects)
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
 
 	CGameObject *obj = NULL;
-	obj = new CBullet();
-
+	obj = new CBullet(nx);
 
 	// General object setup
 	obj->SetPosition(x, y);

@@ -16,6 +16,6 @@ class CBullet : public CGameObject
 	virtual void Render();
 
 public:
-	CBullet();
+	CBullet(float nx);
 	virtual void SetState(int state);
 };

@@ -19,6 +19,7 @@
 
 class CKoopas : public CGameObject
 {
+	int dame;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
@@ -26,4 +27,5 @@ class CKoopas : public CGameObject
 public:
 	CKoopas();
 	virtual void SetState(int state);
+	virtual int GetDame() { return dame; };
 };

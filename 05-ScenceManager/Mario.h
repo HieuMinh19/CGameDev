@@ -45,6 +45,7 @@ class CMario : public CGameObject
 	int untouchable;
 	DWORD untouchable_start;
 	int health;
+	int maxHealth;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y; 

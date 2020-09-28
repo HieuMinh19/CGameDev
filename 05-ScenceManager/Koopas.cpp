@@ -3,6 +3,7 @@
 CKoopas::CKoopas()
 {
 	SetState(KOOPAS_STATE_WALKING);
+	dame = 30;
 }
 
 void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &bottom)
