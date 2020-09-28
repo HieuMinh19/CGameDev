@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <assert.h>
 #include "Utils.h"
 
@@ -7,6 +7,7 @@
 
 #include "Goomba.h"
 #include "Portal.h"
+#include "Bullet.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -321,19 +322,30 @@ void CMario::ResetAttackUp()
 
 void CMario::fire(vector<LPGAMEOBJECT> &objects)
 {
-    
+	if (isAttackUp == true && isStandAttack != true) {
+		return;
+	}
     int ani_set_id = 6;
 
     CAnimationSets * animation_sets = CAnimationSets::GetInstance();
-
+	
     CGameObject *obj = NULL;
-    obj = new CBullet();
-
+	obj = new CBullet(nx);
 
     // General object setup
-    obj->SetPosition(x, y);
-
-    LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	if (isStandAttack == true) {
+		obj->vx = 0;
+		obj->vy = -BULLET_WALKING_SPEED;
+		obj->SetPosition(x + MARIO_BIG_BBOX_WIDTH /2, y);//code xấu
+	}
+	else if (nx > 0) {
+		obj->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + 16);//code xấu
+	}
+	else if (nx < 0) {
+		obj->SetPosition(x , y + 16);
+	}
+    
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
     obj->SetAnimationSet(ani_set);
     objects.push_back(obj);

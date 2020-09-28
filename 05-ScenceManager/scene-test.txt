@@ -68,7 +68,7 @@
 40004	355	117	370	133	20
 
 #Bullet
-60001	0	0	8	8	60
+60001	933	361	941	369	60
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 # ==== MARIO =========

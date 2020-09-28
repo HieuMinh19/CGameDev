@@ -240,6 +240,9 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+		if (objects[i]->state == -1) {
+			objects[i]->deleteObject(objects, i);
+		}
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -279,7 +282,7 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-
+	vector<LPGAMEOBJECT> objects = ((CPlayScene*)scence)->GetObjects();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
@@ -292,7 +295,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->isAttackUp = TRUE;
 			//mario->isStandAttack = TRUE;	
 		break;
-	}
 	case DIK_Z:
 		mario->fire(objects);
 		break;
