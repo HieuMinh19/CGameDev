@@ -30,8 +30,10 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void UpdateObjects(vector<LPGAMEOBJECT> objs) { objects = objs; };
 
 	CMario * GetPlayer() { return player; } 
+	vector<LPGAMEOBJECT> GetObjects(){ return objects; }
 
 	//friend class CPlayScenceKeyHandler;
 };

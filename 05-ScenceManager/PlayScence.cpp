@@ -293,7 +293,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			//mario->isStandAttack = TRUE;	
 		break;
 	}
+	case DIK_Z:
+		mario->fire(objects);
+		break;
+	}
+
+	((CPlayScene*)scence)->UpdateObjects(objects);
 }
+
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);

@@ -74,7 +74,7 @@ public:
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-
+    void fire(vector<LPGAMEOBJECT> &objects);
 	void Reset();
 	void ResetJump();
 	void ResetAttackUp();

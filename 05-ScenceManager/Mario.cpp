@@ -319,3 +319,23 @@ void CMario::ResetAttackUp()
 	animation_set->at(MARIO_ANI_ATTACK_UP_RIGHT)->Reset();
 }
 
+void CMario::fire(vector<LPGAMEOBJECT> &objects)
+{
+    
+    int ani_set_id = 6;
+
+    CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+
+    CGameObject *obj = NULL;
+    obj = new CBullet();
+
+
+    // General object setup
+    obj->SetPosition(x, y);
+
+    LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+    obj->SetAnimationSet(ani_set);
+    objects.push_back(obj);
+    
+}
