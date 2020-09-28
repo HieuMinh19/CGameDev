@@ -2,7 +2,7 @@
 [TEXTURES]
 0	textures\tankAndMain.png	255	255	255
 20	textures\misc.png	176	224	248
-
+60	textures\tankAndMain.png	255	255	255
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]
@@ -67,6 +67,8 @@
 40003	336	117	352	133	20
 40004	355	117	370	133	20
 
+#Bullet
+60001	0	0	8	8	60
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 # ==== MARIO =========
@@ -104,6 +106,8 @@
 607	10090	150	10091	150	10092	150
 # ==== QUESTION BRICK =========
 602	40001	1000	40001	100	40002	100	40003	100	40004	100
+#Bullet
+901	60001	100
 
 #
 # id	ani1	ani2	ani3
@@ -113,7 +117,8 @@
 1	400	401	402	403	500	501	502	503	599	600	601	603	604	605	606	607
 # QUESTION BRICK 
 22	602
-
+#Bullet
+6	901
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
