@@ -57,7 +57,10 @@
 50031	152	202	168	217	20
 
 #GUN
-60001	0	0	7	7	60
+60001	1	1	9	9	60
+60002	10	1	18	9	60
+60003	19	1	27	9	60
+60004	28	1	36	9	60
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -103,7 +106,7 @@
 #die
 803	50031	100
 #GUN
-901	60001	100
+901	60001	100 	60002	100	60003	100	60004	100
 #
 # id	ani1	ani2	ani3
 #
@@ -122,7 +125,7 @@
 6	901
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopasz
 # MARIO
 0	10	0	1
 
