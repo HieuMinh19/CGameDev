@@ -1,5 +1,5 @@
 #include "Koopas.h"
-
+#include "Utils.h"
 CKoopas::CKoopas()
 {
 	SetState(KOOPAS_STATE_WALKING);
@@ -24,7 +24,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// TODO: This is a very ugly designed function!!!!
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
+	// Simple fall down
+	vy += KOOPAS_GRAVITY * dt;
 	coEvents.clear();
 
 	// turn off collision when die 
@@ -63,13 +64,17 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
 
-	if (vx < 0 && x < 5) {
-		x = 5; vx = -vx;
+	if (vx < 0 && x < 0) {
+		x = 0; vx = -vx;
 	}
 
-	if (vx > 0 && x > 250) {
-		x = 250; vx = -vx;
+	if (vx >= 0 && x > 290) {
+		x = 290;
+		vx = -vx;
+		DebugOut(L"[GOIF] Speed of %f Koopas!\n", vx);
 	}
+	DebugOut(L"[SPEED] Speed of %f Koopas!\n", vx);
+	DebugOut(L"[POSITION] Position of %d Koopas!\n", x);
 }
 
 void CKoopas::Render()
