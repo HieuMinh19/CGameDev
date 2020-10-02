@@ -240,6 +240,9 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+		if (objects[i]->state == -1) {
+			objects[i]->deleteObject(objects, i);
+		}
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -279,15 +282,38 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-
+	vector<LPGAMEOBJECT> objects = ((CPlayScene*)scence)->GetObjects();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
-		mario->SetState(MARIO_STATE_JUMP);
-		break;
+
 	case DIK_A: 
 		mario->Reset();
+		break;
+	case DIK_UP:
+			mario->attack_start = GetTickCount();
+			mario->isAttackUp = TRUE;
+			//mario->isStandAttack = TRUE;	
+		break;
+	case DIK_Z:
+		mario->fire(objects);
+		break;
+	}
+
+	((CPlayScene*)scence)->UpdateObjects(objects);
+}
+
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
+{
+	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	switch (KeyCode)
+	{
+	case DIK_UP:
+		mario->isStandAttack = FALSE;
+		mario->isAttackUp = FALSE;
+		mario->ResetAttackUp();
 		break;
 	}
 }
@@ -299,10 +325,26 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		mario->SetState(MARIO_STATE_WALKING_RIGHT);
+	if (game->IsKeyDown(DIK_RIGHT)) {
+		if (mario->isStandAttack) {
+			mario->SetState(MARIO_STATE_WALK_UP_RIGHT);
+		}
+		else
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+	}
 	else if (game->IsKeyDown(DIK_LEFT))
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
+	else if (game->IsKeyDown(DIK_SPACE)) {
+		if (!mario->isJumping) {
+			mario->isJumping = true;
+			mario->jump_start = GetTickCount();
+			if (mario->isStandAttack) {
+				mario->SetState(MARIO_STATE_JUMP_UP);
+			}
+			else
+				mario->SetState(MARIO_STATE_JUMP);
+		}
+	}
 	else
 		mario->SetState(MARIO_STATE_IDLE);
 }

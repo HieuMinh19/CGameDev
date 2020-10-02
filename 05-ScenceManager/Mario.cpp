@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <assert.h>
 #include "Utils.h"
 
@@ -7,6 +7,7 @@
 
 #include "Goomba.h"
 #include "Portal.h"
+#include "Bullet.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -26,8 +27,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	vy += MARIO_GRAVITY*dt;
-
+	if (!isJumping)
+		vy += MARIO_GRAVITY*dt;
+	else
+		vy += JUMP_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -115,7 +118,41 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-
+	//Jump checking
+	if (isJumping) {
+		if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
+		{
+			isJumping = FALSE;
+			ResetJump();
+		}
+	}
+	//Stand attack checking
+	if (isAttackUp && !isStandAttack) {
+		state = MARIO_STATE_ATTACK_UP_RIGHT;
+		if (GetTickCount() - attack_start > 450)
+		{
+			isStandAttack = TRUE;
+			
+		}
+	}
+	if (isStandAttack) {
+		if (vx == 0) {
+			if (!isJumping) {
+				state = MARIO_STATE_STAND_ATTACK_RIGHT;
+			}
+			else {
+				state = MARIO_STATE_JUMP_UP;
+			}
+		}
+		else {
+			if (nx > 0) {
+				state = MARIO_STATE_WALK_UP_RIGHT;
+			}
+		}
+	}
+	if (!isAttackUp) {
+		state = MARIO_STATE_IDLE;
+	}
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -125,19 +162,48 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	else
-	if (level == MARIO_LEVEL_BIG)
+	else if (level == MARIO_LEVEL_BIG)
 	{
 		if (vx == 0)
 		{
-			if (nx>0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
-			else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			if (!isJumping) {
+				if (nx > 0) {
+					if (state == MARIO_STATE_IDLE)
+						ani = MARIO_ANI_BIG_IDLE_RIGHT;
+					else if(state == MARIO_STATE_ATTACK_UP_RIGHT) 
+						ani = MARIO_ANI_ATTACK_UP_RIGHT;
+					else if (state == MARIO_STATE_STAND_ATTACK_RIGHT) {
+						ani = MARIO_ANI_STAND_ATTACK_RIGHT;
+					}
+					else ani = MARIO_ANI_BIG_IDLE_RIGHT;
+				}
+				else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			}
+			if (isJumping) {
+				if (nx > 0) {
+					if(state == MARIO_STATE_JUMP_UP){
+						ani = MARIO_ANI_JUMP_UP_RIGHT;
+					}
+					else {
+						ani = MARIO_ANI_JUMP_RIGHT;
+					}
+				}
+				else ani = MARIO_ANI_JUMP_LEFT;
+			}
 		}
-		else if (vx > 0) 
-			ani = MARIO_ANI_BIG_WALKING_RIGHT; 
-		else ani = MARIO_ANI_BIG_WALKING_LEFT;
+		else if (vx > 0) {
+			if(state == MARIO_STATE_WALK_UP_RIGHT){ 
+				ani = MARIO_ANI_WALK_UP_RIGHT;
+			}
+			else {
+				ani = MARIO_ANI_BIG_WALKING_RIGHT;
+			}
+		}
+		else {
+			ani = MARIO_ANI_BIG_WALKING_LEFT;
+		}
 	}
-	else if (level == MARIO_LEVEL_SMALL)
+	/*else if (level == MARIO_LEVEL_SMALL)
 	{
 		if (vx == 0)
 		{
@@ -147,7 +213,7 @@ void CMario::Render()
 		else if (vx > 0)
 			ani = MARIO_ANI_SMALL_WALKING_RIGHT;
 		else ani = MARIO_ANI_SMALL_WALKING_LEFT;
-	}
+	}*/
 
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -175,24 +241,41 @@ void CMario::SetState(int state)
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		vy = -MARIO_JUMP_SPEED_Y;
 		break; 
+	case MARIO_STATE_JUMP_UP:
+		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
+		vy = -MARIO_JUMP_SPEED_Y;
+		break;
 	case MARIO_STATE_IDLE: 
 		vx = 0;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		break;
+	case MARIO_STATE_ATTACK_UP_RIGHT:
+		level = MARIO_LEVEL_ATTACK_UP;
+		break;
+	case MARIO_STATE_WALK_UP_RIGHT:
+		vx = MARIO_WALKING_SPEED;
+		nx = 1;
+		break;
 	}
 }
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	float new_y;
+	new_y = y + 15;
 	left = x;
-	top = y; 
+	top = new_y;
 
 	if (level==MARIO_LEVEL_BIG)
 	{
 		right = x + MARIO_BIG_BBOX_WIDTH;
-		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+		bottom = new_y + MARIO_BIG_BBOX_HEIGHT;
+	}
+	else if (level == MARIO_LEVEL_ATTACK_UP) {
+		right = x + MARIO_ATTACK_UP_BBOX_WIDTH;
+		bottom = y + MARIO_ATTACK_UP_BBOX_HEIGHT;
 	}
 	else
 	{
@@ -210,5 +293,61 @@ void CMario::Reset()
 	SetLevel(MARIO_LEVEL_BIG);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_JUMP_RIGHT)->Reset();
+}
+void CMario::ResetJump()
+{
+	isJumping = FALSE;
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_BIG);
+	//SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_JUMP_RIGHT)->Reset();
+	animation_set->at(MARIO_ANI_JUMP_LEFT)->Reset();
+	animation_set->at(MARIO_ANI_JUMP_UP_RIGHT)->Reset();
+	
 }
 
+void CMario::ResetAttackUp()
+{
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_BIG);
+	//SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+	//reset sate jump
+	animation_set->at(MARIO_ANI_ATTACK_UP_RIGHT)->Reset();
+}
+
+void CMario::fire(vector<LPGAMEOBJECT> &objects)
+{
+	if (isAttackUp == true && isStandAttack != true) {
+		return;
+	}
+    int ani_set_id = 6;
+
+    CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+	
+    CGameObject *obj = NULL;
+	obj = new CBullet(nx);
+
+    // General object setup
+	if (isStandAttack == true) {
+		obj->vx = 0;
+		obj->vy = -BULLET_WALKING_SPEED;
+		obj->SetPosition(x + MARIO_BIG_BBOX_WIDTH /2, y);//code xấu
+	}
+	else if (nx > 0) {
+		obj->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + 16);//code xấu
+	}
+	else if (nx < 0) {
+		obj->SetPosition(x , y + 16);
+	}
+    
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+    obj->SetAnimationSet(ani_set);
+    objects.push_back(obj);
+    
+}
