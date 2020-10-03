@@ -30,8 +30,10 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void UpdateObjects(vector<LPGAMEOBJECT> objs) { objects = objs; };
 
 	CMario * GetPlayer() { return player; } 
+	vector<LPGAMEOBJECT> GetObjects(){ return objects; }
 
 	//friend class CPlayScenceKeyHandler;
 };
@@ -41,7 +43,7 @@ class CPlayScenceKeyHandler : public CScenceKeyHandler
 public: 
 	virtual void KeyState(BYTE *states);
 	virtual void OnKeyDown(int KeyCode);
-	virtual void OnKeyUp(int KeyCode) {};
+	virtual void OnKeyUp(int KeyCode);
 	CPlayScenceKeyHandler(CScene *s) :CScenceKeyHandler(s) {};
 };
 

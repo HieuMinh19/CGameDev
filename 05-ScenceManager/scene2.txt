@@ -5,7 +5,7 @@
 6	textures\main_character_revert.png	0	57	115
 20	textures\misc.png	176	224	248
 #50	textures\enemies.png	3	26	110
-30	textures\enemies-2.png	0	128	128
+30	textures\enemies-1.png	255	0	255
 
 
 # id	left	top	right	bottom	texture_id
@@ -54,11 +54,11 @@
 
 #KOOPAS
 #walk left
-50001	205	191	221	217	30
-50002	222	191	238	217	30
+50001	88	1	104	27	30
+50002	105	1	125	27	30
 #walk right
-50011	187	191	202	217	30
-50012	170	191	185	217	30
+50012	130	1	147	27	30
+50011	148	1	164	27	30
 #die
 50031	152	202	168	217	20
 
@@ -104,7 +104,7 @@
 #walk left
 801	50001	100	50002	100
 #walk right
-802	50011	100	50012	100'
+802	50011	100	50012	100
 #die
 803	50031	100
 
@@ -130,7 +130,7 @@
 0	10	0	1
 
 # KOOPAS
-3	20	124	4
+3	20	100	4
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
@@ -166,11 +166,14 @@
 1	416	150	2
 1	432	150	2
 1	448	150	2
-#
-1	150	134	22
+# QUESTION BRICK
+#1	150	134	22
 
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id
 50	300	98	0	380	150	1
+
+
+
 
