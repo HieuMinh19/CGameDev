@@ -8,6 +8,7 @@
 #define MARIO_GRAVITY			0.002f
 #define JUMP_GRAVITY			0.0005f
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
+#define MARIO_JUMP_WHILE_WALK_SPEED_Y		0.125f
 
 #define MARIO_STATE_IDLE			0
 #define MARIO_STATE_WALKING_RIGHT	100
@@ -65,7 +66,7 @@ class CMario : public CGameObject
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
 public: 
-	boolean isJumping, isAttackUp, isStandAttack;
+	boolean isJumping, isAttackUp, isStandAttack, isJumpingWhileWalk;
 	DWORD jump_start, attack_start;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);

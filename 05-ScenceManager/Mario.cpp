@@ -50,8 +50,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
-		x += dx; 
-		y += dy;
+			x += dx;
+			y += dy;
 	}
 	else
 	{
@@ -67,6 +67,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		//	x += nx*abs(rdx); 
 		
 		// block every object first!
+		
 		x += min_tx*dx + nx*0.4f;
 		y += min_ty*dy + ny*0.4f;
 
@@ -153,6 +154,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (!isAttackUp) {
 		state = MARIO_STATE_IDLE;
 	}
+	
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -239,7 +241,13 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -MARIO_JUMP_SPEED_Y;
+		if (isJumpingWhileWalk) {
+			vy = -MARIO_JUMP_WHILE_WALK_SPEED_Y;
+		}
+		else {
+			vy = -MARIO_JUMP_SPEED_Y;
+		}
+		
 		break; 
 	case MARIO_STATE_JUMP_UP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
@@ -299,6 +307,7 @@ void CMario::Reset()
 void CMario::ResetJump()
 {
 	isJumping = FALSE;
+	isJumpingWhileWalk = FALSE;
 	SetState(MARIO_STATE_IDLE);
 	SetLevel(MARIO_LEVEL_BIG);
 	//SetPosition(start_x, start_y);
