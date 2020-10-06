@@ -7,13 +7,14 @@
 #include "Mario.h"
 #include "Goomba.h"
 #include "Koopas.h"
+#include "Jason.h"
 
 
 class CPlayScene: public CScene
 {
 protected: 
-	CMario *player;					// A play scene has to have player, right? 
-
+	//CMario *player;					// A play scene has to have player, right? 
+	CJason* player;
 	vector<LPGAMEOBJECT> objects;
 
 	void _ParseSection_TEXTURES(string line);
@@ -32,7 +33,8 @@ public:
 	virtual void Unload();
 	virtual void UpdateObjects(vector<LPGAMEOBJECT> objs) { objects = objs; };
 
-	CMario * GetPlayer() { return player; } 
+	//CMario * GetPlayer() { return player; } 
+	CJason* GetPlayer() { return player; }
 	vector<LPGAMEOBJECT> GetObjects(){ return objects; }
 
 	//friend class CPlayScenceKeyHandler;

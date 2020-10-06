@@ -148,8 +148,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario(x,y); 
-		player = (CMario*)obj;  
+		obj = new CJason(x,y); 
+		player = (CJason*)obj;  
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
@@ -281,39 +281,40 @@ void CPlayScene::Unload()
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	vector<LPGAMEOBJECT> objects = ((CPlayScene*)scence)->GetObjects();
-	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
+	CJason *jason = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-
 	case DIK_A: 
-		mario->Reset();
+		jason->Reset();
 		break;
 	case DIK_UP:
-			mario->attack_start = GetTickCount();
-			mario->isAttackUp = TRUE;
+			jason->attack_start = GetTickCount();
+			jason->isAttackUp = TRUE;
 			//mario->isStandAttack = TRUE;	
 		break;
 	case DIK_Z:
-		mario->fire(objects);
+		jason->fire(objects);
 		break;
 	}
+	
+
 
 	((CPlayScene*)scence)->UpdateObjects(objects);
 }
 
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 
-	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	CJason *jason = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
 	case DIK_UP:
-		mario->isStandAttack = FALSE;
-		mario->isAttackUp = FALSE;
-		mario->ResetAttackUp();
+		jason->isStandAttack = FALSE;
+		jason->isAttackUp = FALSE;
+		jason->ResetAttackUp();
 		break;
 	}
 }
@@ -321,30 +322,32 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
-	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
+	CJason *jason = ((CPlayScene*)scence)->GetPlayer();
 
 	// disable control key when Mario die 
-	if (mario->GetState() == MARIO_STATE_DIE) return;
+	if (jason->GetState() == JASON_STATE_DIE) return;
 	if (game->IsKeyDown(DIK_RIGHT)) {
-		if (mario->isStandAttack) {
-			mario->SetState(MARIO_STATE_WALK_UP_RIGHT);
+		if (jason->isStandAttack) {
+			jason->SetState(JASON_STATE_WALK_UP_RIGHT);
+			DebugOut(L"[INFO] walking up right\n");
 		}
 		else
-			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			jason->SetState(JASON_STATE_WALKING_RIGHT);
+			DebugOut(L"[INFO] walking right\n");
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
+		jason->SetState(JASON_STATE_WALKING_LEFT);
 	else if (game->IsKeyDown(DIK_SPACE)) {
-		if (!mario->isJumping) {
-			mario->isJumping = true;
-			mario->jump_start = GetTickCount();
-			if (mario->isStandAttack) {
-				mario->SetState(MARIO_STATE_JUMP_UP);
+		if (!jason->isJumping) {
+			jason->isJumping = true;
+			jason->jump_start = GetTickCount();
+			if (jason->isStandAttack) {
+				jason->SetState(JASON_STATE_JUMP_UP);
 			}
 			else
-				mario->SetState(MARIO_STATE_JUMP);
+				jason->SetState(JASON_STATE_JUMP);
 		}
 	}
 	else
-		mario->SetState(MARIO_STATE_IDLE);
+		jason->SetState(JASON_STATE_IDLE);
 }
