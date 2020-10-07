@@ -281,7 +281,7 @@ void CPlayScene::Unload()
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	vector<LPGAMEOBJECT> objects = ((CPlayScene*)scence)->GetObjects();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
@@ -297,6 +297,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_Z:
 		mario->fire(objects);
 		break;
+	case DIK_SPACE:
+		if (mario->vx != 0) {
+			mario->isJumpingWhileWalk = true;
+		}
 	}
 
 	((CPlayScene*)scence)->UpdateObjects(objects);

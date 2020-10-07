@@ -27,10 +27,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
-	if (!isJumping)
-		vy += MARIO_GRAVITY*dt;
-	else
+	if (!isJumping) {
+		vy += MARIO_GRAVITY * dt;
+	}
+	else {
 		vy += JUMP_GRAVITY * dt;
+	}
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -71,7 +73,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx*dx + nx*0.4f;
 		y += min_ty*dy + ny*0.4f;
 
-		if (nx!=0) vx = 0;
+		//if (nx!=0) vx = 0;
 		if (ny!=0) vy = 0;
 
 
@@ -120,11 +122,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	//Jump checking
+	//DebugOut(L"[INFO] vx: %d\n", vx);
+	//DebugOut(L"[INFO] dx: %d\n", dx);
+	//DebugOut(L"[INFO] isJumping: %d\n", isJumping);
+	DebugOut(L"[INFO] vx: %d\n", vx);
 	if (isJumping) {
-		if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
-		{
-			isJumping = FALSE;
-			ResetJump();
+		//DebugOut(L"[INFO] isJumping: %d\n", isJumping);
+		//DebugOut(L"[INFO] isJumpingWhileWalk: %d\n", isJumpingWhileWalk);
+
+		if (isJumpingWhileWalk) {
+			if (GetTickCount() - jump_start < MARIO_JUMP_TIME) {
+				if (nx > 0) {
+					x += (MARIO_JUMP_WHILE_WALK_SPEED_X * dt);
+				}
+				else {
+					x -= (MARIO_JUMP_WHILE_WALK_SPEED_X * dt);
+				}//fix this
+			}
+			if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
+			{
+				isJumping = FALSE;
+				ResetJump();
+			}
+		}
+		else {
+			if (GetTickCount() - jump_start > MARIO_JUMP_TIME)
+			{
+				isJumping = FALSE;
+				ResetJump();
+			}
 		}
 	}
 	//Stand attack checking
@@ -133,7 +159,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount() - attack_start > 450)
 		{
 			isStandAttack = TRUE;
-			
 		}
 	}
 	if (isStandAttack) {
@@ -243,6 +268,12 @@ void CMario::SetState(int state)
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		if (isJumpingWhileWalk) {
 			vy = -MARIO_JUMP_WHILE_WALK_SPEED_Y;
+			if (nx > 0) {
+				vx = MARIO_JUMP_WHILE_WALK_SPEED_X;
+			}
+			else {
+				vx = -MARIO_JUMP_WHILE_WALK_SPEED_X;
+			}
 		}
 		else {
 			vy = -MARIO_JUMP_SPEED_Y;
