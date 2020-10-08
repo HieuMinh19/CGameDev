@@ -84,15 +84,11 @@ void CBullet::SetState(int state)
 		vx = BULLET_WALKING_SPEED
 		if(nx<0)
 			vx = -BULLET_WALKING_SPEED;
-<<<<<<< HEAD
 		if (nx == 0)
 		{
 			vx = 0;
 			vy = -BULLET_WALKING_SPEED;
 		}
-			
-=======
->>>>>>> week1/items
 		break;
 	case BULLET_STATE_DIE:
 		break;
