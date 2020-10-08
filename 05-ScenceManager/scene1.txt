@@ -6,9 +6,12 @@
 20	textures\misc.png	176	224	248
 10	textures\enemies.png	3	26	110
 #10	textures\enemies-1.png	3	26	110
+30	textures\intro.png	3	26	110
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]
+# BACKGROUND
+80001	1	1	256	224	30
 # TANK 
 # idle right
 10001	3	30	10	45	5
@@ -88,7 +91,8 @@
 # die
 702	30003	100
 
-
+# ==== BACKGROUND  =========
+800	80001	100
 
 #
 # id	ani1	ani2	ani3
@@ -102,10 +106,16 @@
 22	602
 # GOOMBA
 3	701	702
+# BACKGROUND 
+4	800
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 4 = Goomba
+
+# BACKGROUND
+4	1	1	4
+
 # MARIO
 0	50.0	0	1
 
