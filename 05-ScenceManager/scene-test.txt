@@ -3,9 +3,19 @@
 0	textures\tankAndMain.png	255	255	255
 20	textures\misc.png	176	224	248
 60	textures\tankAndMain.png	255	255	255
-
+30	textures\intro.png	255	255	255
 # id	left	top	right	bottom	texture_id
 [SPRITES]
+# BACKGROUND
+80001	1	1	258	224	30
+80002	259	1	516	224	30
+80003	517	1	774	224	30
+80011	1	226	258	450	30
+80012	259	226	516	450	30
+80013	517	226	774	450	30
+80021	1	451	258	680	30
+80022	259	451	516	680	30
+80023	517	451	774	680	30
 # BIG MARIO 
 # idle right
 10001	0	6	26	42	0
@@ -108,11 +118,14 @@
 602	40001	1000	40001	100	40002	100	40003	100	40004	100
 #Bullet
 901	60001	100
-
+# BACKGROUND
+801	80001	1000	80002	200	80003	200	80011	200	80012	200	80013	200	80021	200	80022	200	80023	200
 #
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
+# ==== BACKGROUND =========
+4	801
 # MARIO
 1	400	401	402	403	500	501	502	503	599	600	601	603	604	605	606	607
 # QUESTION BRICK 
@@ -122,6 +135,8 @@
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+#  ========= BACKGROUND =========
+4	0	0	4
 # MARIO
 0	17	50	1
 
