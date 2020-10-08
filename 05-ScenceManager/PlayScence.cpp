@@ -6,6 +6,7 @@
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
+#include "Bullet.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_BULLET	6
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -262,7 +264,10 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
+	{
 		objects[i]->Render();
+	}
+		
 }
 
 /*
@@ -315,7 +320,12 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->isAttackUp = FALSE;
 		mario->ResetAttackUp();
 		break;
+	case DIK_Z:
+		mario->fire(objects);
+		break;
 	}
+
+	((CPlayScene*)scence)->UpdateObjects(objects);
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
@@ -347,4 +357,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else
 		mario->SetState(MARIO_STATE_IDLE);
+}
+
+void CGameObject::deleteObject(vector<LPGAMEOBJECT>& coObjects, int i) {
+	coObjects.erase(coObjects.begin() + i);
 }

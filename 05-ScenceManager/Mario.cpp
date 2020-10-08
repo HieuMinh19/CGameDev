@@ -8,12 +8,15 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "Bullet.h"
+#include "Koopas.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
+	health = MARIO_HEALTH_MAX;
+	maxHealth = MARIO_HEALTH_MAX;
 
 	start_x = x; 
 	start_y = y; 
@@ -25,12 +28,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-
 	// Simple fall down
 	if (!isJumping)
 		vy += MARIO_GRAVITY*dt;
 	else
 		vy += JUMP_GRAVITY * dt;
+//=======
+//	vy += MARIO_GRAVITY*dt;
+//>>>>>>> week1/items
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -115,6 +120,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
+			}
+			else if (dynamic_cast<CKoopas *>(e->obj))
+			{
+				CKoopas *koopas = dynamic_cast<CKoopas *>(e->obj);
+				if (untouchable == 0)
+				{	
+					if (koopas->GetState() == KOOPAS_STATE_HEALTH)
+					{
+						health += 100;
+						if (health > maxHealth)
+							health = maxHealth;
+						koopas->SetState(KOOPAS_STATE_DIE);
+						DebugOut(L"[ERROR] M�u %i \n", health);
+					}
+					else {
+						health -= koopas->GetDame();
+						if (health < 0) {
+							SetState(MARIO_STATE_DIE);
+						}
+						StartUntouchable();
+						DebugOut(L"[ERROR] M�u %i \n", health);
+					}
+				}
 			}
 		}
 	}
@@ -350,4 +378,23 @@ void CMario::fire(vector<LPGAMEOBJECT> &objects)
     obj->SetAnimationSet(ani_set);
     objects.push_back(obj);
     
+}
+void CMario::fire(vector<LPGAMEOBJECT> &objects)
+{
+	
+	int ani_set_id = 6;
+
+	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
+
+	CGameObject *obj = NULL;
+	obj = new CBullet(nx);
+
+	// General object setup
+	obj->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+	obj->SetAnimationSet(ani_set);
+	objects.push_back(obj);
+	
 }

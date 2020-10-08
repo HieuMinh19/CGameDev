@@ -48,23 +48,20 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		
-
-
 		//
 		// Collision logic with other objects
 		//
-		//for (UINT i = 0; i < coEventsResult.size(); i++)
-		//{
-		//	LPCOLLISIONEVENT e = coEventsResult[i];
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
 
-		//	if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Goomba 
-		//	{
-		//		CKoopas *koomba = dynamic_cast<CKoopas *>(e->obj);
-		//		koomba->SetState(KOOPAS_STATE_HEALTH);
-		//		SetState(BULLET_STATE_DIE);
-		//	} 
-		//}
+			if (dynamic_cast<CKoopas *>(e->obj)) // if e->obj is Goomba 
+			{
+				CKoopas *koomba = dynamic_cast<CKoopas *>(e->obj);
+				koomba->SetState(KOOPAS_STATE_HEALTH);
+				SetState(BULLET_STATE_DIE);
+			} 
+		}
 
 		if (nx != 0 || ny != 0) SetState(BULLET_STATE_DIE);
 	}
@@ -87,12 +84,15 @@ void CBullet::SetState(int state)
 		vx = BULLET_WALKING_SPEED
 		if(nx<0)
 			vx = -BULLET_WALKING_SPEED;
+<<<<<<< HEAD
 		if (nx == 0)
 		{
 			vx = 0;
 			vy = -BULLET_WALKING_SPEED;
 		}
 			
+=======
+>>>>>>> week1/items
 		break;
 	case BULLET_STATE_DIE:
 		break;

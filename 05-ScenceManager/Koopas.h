@@ -10,13 +10,16 @@
 
 #define KOOPAS_STATE_WALKING 100
 #define KOOPAS_STATE_DIE -1
+#define KOOPAS_STATE_HEALTH 200
 
 #define KOOPAS_ANI_WALKING_LEFT 0
 #define KOOPAS_ANI_WALKING_RIGHT 1
-#define KOOPAS_ANI_DIE 2
+#define KOOPAS_ANI_HEALTH 2
+#define KOOPAS_ANI_DIE 3
 
 class CKoopas : public CGameObject
 {
+	int dame;
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
@@ -24,4 +27,5 @@ class CKoopas : public CGameObject
 public:
 	CKoopas();
 	virtual void SetState(int state);
+	virtual int GetDame() { return dame; };
 };

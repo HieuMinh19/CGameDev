@@ -55,12 +55,15 @@
 #define MARIO_UNTOUCHABLE_TIME 5000
 #define MARIO_JUMP_TIME 1000
 
+#define MARIO_HEALTH_MAX 100;
 
 class CMario : public CGameObject
 {
 	int level;
 	int untouchable;
 	DWORD untouchable_start;
+	int health;
+	int maxHealth;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
@@ -78,5 +81,7 @@ public:
 	void Reset();
 	void ResetJump();
 	void ResetAttackUp();
+	void fire(vector<LPGAMEOBJECT> &objects);
+	void Reset();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
