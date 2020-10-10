@@ -125,7 +125,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	//DebugOut(L"[INFO] vx: %d\n", vx);
 	//DebugOut(L"[INFO] dx: %d\n", dx);
 	//DebugOut(L"[INFO] isJumping: %d\n", isJumping);
-	DebugOut(L"[INFO] vx: %d\n", vx);
+	//DebugOut(L"[INFO] nx: %d\n", nx);	
+	//DebugOut(L"state of tank\n", state);
+	//DebugOut(L"jww\n", isJumpingWhileWalk);
 	if (isJumping) {
 		//DebugOut(L"[INFO] isJumping: %d\n", isJumping);
 		//DebugOut(L"[INFO] isJumpingWhileWalk: %d\n", isJumpingWhileWalk);
@@ -135,7 +137,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (nx > 0) {
 					x += (MARIO_JUMP_WHILE_WALK_SPEED_X * dt);
 				}
-				else {
+				if(nx <0 ) {			
 					x -= (MARIO_JUMP_WHILE_WALK_SPEED_X * dt);
 				}//fix this
 			}
@@ -155,7 +157,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	//Stand attack checking
 	if (isAttackUp && !isStandAttack) {
-		state = MARIO_STATE_ATTACK_UP_RIGHT;
+		if (nx > 0) {
+			state = MARIO_STATE_ATTACK_UP_RIGHT;
+		}
+		else {
+			state = MARIO_STATE_ATTACK_UP_LEFT;
+		}
 		if (GetTickCount() - attack_start > 450)
 		{
 			isStandAttack = TRUE;
@@ -164,15 +171,28 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (isStandAttack) {
 		if (vx == 0) {
 			if (!isJumping) {
-				state = MARIO_STATE_STAND_ATTACK_RIGHT;
+				if(nx>0){
+					state = MARIO_STATE_STAND_ATTACK_RIGHT;
+				}
+				else {
+					state = MARIO_STATE_STAND_ATTACK_LEFT;
+				}
 			}
 			else {
-				state = MARIO_STATE_JUMP_UP;
+				if (nx > 0) {
+					state = MARIO_STATE_JUMP_UP_RIGHT;
+				}
+				else {
+					state = MARIO_STATE_JUMP_UP_LEFT;
+				}
 			}
 		}
 		else {
 			if (nx > 0) {
 				state = MARIO_STATE_WALK_UP_RIGHT;
+			}
+			else {
+				state = MARIO_STATE_WALK_UP_LEFT;
 			}
 		}
 	}
@@ -204,18 +224,34 @@ void CMario::Render()
 					}
 					else ani = MARIO_ANI_BIG_IDLE_RIGHT;
 				}
-				else ani = MARIO_ANI_BIG_IDLE_LEFT;
+				else {
+					if (state == MARIO_STATE_IDLE)
+						ani = MARIO_ANI_BIG_IDLE_LEFT;
+					else if (state == MARIO_STATE_ATTACK_UP_LEFT)
+						ani = MARIO_ANI_ATTACK_UP_LEFT;
+					else if (state == MARIO_STATE_STAND_ATTACK_LEFT) {
+						ani = MARIO_ANI_STAND_ATTACK_LEFT;
+					}
+					else ani = MARIO_ANI_BIG_IDLE_LEFT;
+				}
 			}
 			if (isJumping) {
 				if (nx > 0) {
-					if(state == MARIO_STATE_JUMP_UP){
+					if(state == MARIO_STATE_JUMP_UP_RIGHT){
 						ani = MARIO_ANI_JUMP_UP_RIGHT;
 					}
 					else {
 						ani = MARIO_ANI_JUMP_RIGHT;
 					}
 				}
-				else ani = MARIO_ANI_JUMP_LEFT;
+				else {
+					if (state == MARIO_STATE_JUMP_UP_LEFT) {
+						ani = MARIO_ANI_JUMP_UP_LEFT;
+					}
+					else {
+						ani = MARIO_ANI_JUMP_LEFT;
+					}
+				}
 			}
 		}
 		else if (vx > 0) {
@@ -227,7 +263,13 @@ void CMario::Render()
 			}
 		}
 		else {
-			ani = MARIO_ANI_BIG_WALKING_LEFT;
+			if (state == MARIO_STATE_WALK_UP_LEFT) {
+				ani = MARIO_ANI_WALK_UP_LEFT;
+			}
+			else {
+				ani = MARIO_ANI_BIG_WALKING_LEFT;
+			}
+			
 		}
 	}
 	/*else if (level == MARIO_LEVEL_SMALL)
@@ -280,7 +322,11 @@ void CMario::SetState(int state)
 		}
 		
 		break; 
-	case MARIO_STATE_JUMP_UP:
+	case MARIO_STATE_JUMP_UP_LEFT:
+		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
+		vy = -MARIO_JUMP_SPEED_Y;
+		break;
+	case MARIO_STATE_JUMP_UP_RIGHT:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		vy = -MARIO_JUMP_SPEED_Y;
 		break;
@@ -296,6 +342,10 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALK_UP_RIGHT:
 		vx = MARIO_WALKING_SPEED;
 		nx = 1;
+		break;
+	case MARIO_STATE_WALK_UP_LEFT:
+		vx = -MARIO_WALKING_SPEED;
+		nx = -1;
 		break;
 	}
 }

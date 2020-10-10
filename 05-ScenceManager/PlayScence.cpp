@@ -297,7 +297,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_Z:
 		mario->fire(objects);
 		break;
-	case DIK_SPACE:
+	case DIK_R:
 		if (mario->vx != 0) {
 			mario->isJumpingWhileWalk = true;
 		}
@@ -323,19 +323,44 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
+
 	CGame *game = CGame::GetInstance();
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT)) {
-		if (game->IsKeyDown(DIK_SPACE)) {
+	
+	if (game->IsKeyDown(DIK_LEFT)) {
+		if (game->IsKeyDown(DIK_R)) {
 			if (!mario->isJumping) {
 				mario->isJumpingWhileWalk = true;
 				mario->isJumping = true;
 				mario->jump_start = GetTickCount();
 				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_JUMP_UP);
+					mario->SetState(MARIO_STATE_JUMP_UP_LEFT);
+				}
+				else
+					mario->SetState(MARIO_STATE_JUMP);
+			}
+		}
+		else {
+			if (!mario->isJumping) {
+				if (mario->isStandAttack) {
+					mario->SetState(MARIO_STATE_WALK_UP_LEFT);
+				}
+				else
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+			}
+		}
+	}
+	else if (game->IsKeyDown(DIK_RIGHT)) {
+		if (game->IsKeyDown(DIK_R)) {
+			if (!mario->isJumping) {
+				mario->isJumpingWhileWalk = true;
+				mario->isJumping = true;
+				mario->jump_start = GetTickCount();
+				if (mario->isStandAttack) {
+					mario->SetState(MARIO_STATE_JUMP_UP_RIGHT);
 				}
 				else
 					mario->SetState(MARIO_STATE_JUMP);
@@ -351,17 +376,17 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 		}
 	}
-	else if (game->IsKeyDown(DIK_LEFT)) {
-		if (!mario->isJumping) {
-			mario->SetState(MARIO_STATE_WALKING_LEFT);
-		}
-	}
-	else if (game->IsKeyDown(DIK_SPACE)) {
+	else if (game->IsKeyDown(DIK_R)) {
 			if (!mario->isJumping) {
 				mario->isJumping = true;
 				mario->jump_start = GetTickCount();
 				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_JUMP_UP);
+					if (mario->nx > 0) {
+						mario->SetState(MARIO_STATE_JUMP_UP_RIGHT);
+					}
+					else {
+						mario->SetState(MARIO_STATE_JUMP_UP_LEFT);
+					}
 				}
 				else
 					mario->SetState(MARIO_STATE_JUMP);
