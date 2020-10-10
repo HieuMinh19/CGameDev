@@ -290,9 +290,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->Reset();
 		break;
 	case DIK_UP:
-			mario->attack_start = GetTickCount();
-			mario->isAttackUp = TRUE;
-			//mario->isStandAttack = TRUE;	
+		mario->AttackUpKeyDown();
 		break;
 	case DIK_Z:
 		mario->fire(objects);
@@ -314,9 +312,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_UP:
-		mario->isStandAttack = FALSE;
-		mario->isAttackUp = FALSE;
-		mario->ResetAttackUp();
+		mario->AttackUpKeyUp();
 		break;
 	}
 }
@@ -329,67 +325,45 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	// disable control key when Mario die 
 	if (mario->GetState() == MARIO_STATE_DIE) return;
-	
 	if (game->IsKeyDown(DIK_LEFT)) {
+		mario->SetNx(-1);
 		if (game->IsKeyDown(DIK_R)) {
 			if (!mario->isJumping) {
 				mario->isJumpingWhileWalk = true;
-				mario->isJumping = true;
-				mario->jump_start = GetTickCount();
-				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_JUMP_UP_LEFT);
-				}
-				else
-					mario->SetState(MARIO_STATE_JUMP);
+				mario->Jump();
 			}
 		}
 		else {
 			if (!mario->isJumping) {
 				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_WALK_UP_LEFT);
+					mario->WalkUp();
 				}
 				else
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
+					mario->Walk();
 			}
 		}
 	}
 	else if (game->IsKeyDown(DIK_RIGHT)) {
+		mario->SetNx (1);
 		if (game->IsKeyDown(DIK_R)) {
 			if (!mario->isJumping) {
 				mario->isJumpingWhileWalk = true;
-				mario->isJumping = true;
-				mario->jump_start = GetTickCount();
-				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_JUMP_UP_RIGHT);
-				}
-				else
-					mario->SetState(MARIO_STATE_JUMP);
+				mario->Jump();
 			}
 		}
 		else {
 			if (!mario->isJumping) {
 				if (mario->isStandAttack) {
-					mario->SetState(MARIO_STATE_WALK_UP_RIGHT);
+					mario->WalkUp();
 				}
 				else
-					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+					mario->Walk();
 			}
 		}
 	}
 	else if (game->IsKeyDown(DIK_R)) {
 			if (!mario->isJumping) {
-				mario->isJumping = true;
-				mario->jump_start = GetTickCount();
-				if (mario->isStandAttack) {
-					if (mario->nx > 0) {
-						mario->SetState(MARIO_STATE_JUMP_UP_RIGHT);
-					}
-					else {
-						mario->SetState(MARIO_STATE_JUMP_UP_LEFT);
-					}
-				}
-				else
-					mario->SetState(MARIO_STATE_JUMP);
+				mario->Jump();
 			}
 			else {
 				return;

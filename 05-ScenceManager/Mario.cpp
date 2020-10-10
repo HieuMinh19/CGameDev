@@ -438,6 +438,51 @@ void CMario::fire(vector<LPGAMEOBJECT> &objects)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
     obj->SetAnimationSet(ani_set);
-    objects.push_back(obj);
-    
+    objects.push_back(obj);   
+}
+void CMario::SetNx(int a) {
+	nx = a;
+}
+void CMario::Walk() {
+	if (nx > 0) {
+		SetState(MARIO_STATE_WALKING_RIGHT);
+	}
+	else {
+		SetState(MARIO_STATE_WALKING_LEFT);
+	}
+}
+void CMario::WalkUp() {
+	if (nx > 0) {
+		SetState(MARIO_STATE_WALK_UP_RIGHT);
+	}
+	else {
+		SetState(MARIO_STATE_WALK_UP_LEFT);
+	}
+}
+void CMario::Jump() {
+	isJumping = true;
+	jump_start = GetTickCount();
+	if (nx > 0) {
+		if (isStandAttack) {
+			SetState(MARIO_STATE_JUMP_UP_RIGHT);
+		}
+		else
+			SetState(MARIO_STATE_JUMP);
+	}
+	else {
+		if (isStandAttack) {
+			SetState(MARIO_STATE_JUMP_UP_LEFT);
+		}
+		else
+			SetState(MARIO_STATE_JUMP);
+	}
+}
+void CMario::AttackUpKeyDown() {
+	attack_start = GetTickCount();
+	isAttackUp = TRUE;
+}
+void CMario::AttackUpKeyUp() {
+	isStandAttack = FALSE;
+	isAttackUp = FALSE;
+	ResetAttackUp();
 }

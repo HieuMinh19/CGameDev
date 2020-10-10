@@ -80,11 +80,17 @@ public:
 	virtual void Render();
 
 	void SetState(int state);
+	void SetNx(int a);
 	void SetLevel(int l) { level = l; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
     void fire(vector<LPGAMEOBJECT> &objects);
 	void Reset();
 	void ResetJump();
 	void ResetAttackUp();
+	void Jump();
+	void Walk();
+	void WalkUp();
+	void AttackUpKeyDown(); 
+	void AttackUpKeyUp();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };
